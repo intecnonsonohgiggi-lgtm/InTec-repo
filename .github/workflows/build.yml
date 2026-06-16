@@ -21,17 +21,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y git curl perl zip unzip fakeroot dpkg-dev bash
 
-      - name: Install Theos (con toolchain automatico)
+      - name: Install Theos
         run: |
           export THEOS=$HOME/theos
           bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           echo "$HOME/theos/bin" >> $GITHUB_PATH
-
-      - name: Verifica toolchain
-        run: |
-          ls $HOME/theos/toolchain/linux/iphone/bin/ | grep clang || echo "clang non trovato"
-          ls $HOME/theos/sdks/ || echo "nessun SDK"
 
       - name: Download iOS SDK
         run: |
@@ -39,7 +34,11 @@ jobs:
             "https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS15.6.sdk.tar.xz"
           mkdir -p $HOME/theos/sdks
           tar -xf sdk.tar.xz -C $HOME/theos/sdks
-          ls $HOME/theos/sdks
+
+      - name: Fix SDK version in Makefile
+        run: |
+          sed -i 's/iphone:clang:[^:]*:/iphone:clang:15.6:/' Makefile
+          grep TARGET Makefile
 
       - name: Compile .deb
         run: |
