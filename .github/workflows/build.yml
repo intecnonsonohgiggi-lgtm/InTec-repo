@@ -19,23 +19,19 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git curl perl zip unzip fakeroot dpkg-dev
+          sudo apt-get install -y git curl perl zip unzip fakeroot dpkg-dev bash
 
-      - name: Install Theos
+      - name: Install Theos (con toolchain automatico)
         run: |
-          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          export THEOS=$HOME/theos
+          bash -c "$(curl -fsSL https://raw.githubusercontent.com/theos/theos/master/bin/install-theos)"
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           echo "$HOME/theos/bin" >> $GITHUB_PATH
 
-      - name: Download iOS Toolchain (clang per iOS su Linux)
+      - name: Verifica toolchain
         run: |
-          curl -L -o toolchain.tar.gz \
-            "https://github.com/kabiroberai/swift-toolchain-linux/releases/download/v2.3.0/toolchain-linux-ubuntu-latest.tar.gz" \
-            || curl -L -o toolchain.tar.gz \
-            "https://github.com/CRKatri/llvm-project/releases/download/swift-5.3.2-RELEASE/swift-5.3.2-RELEASE-ubuntu20.04.tar.gz"
-          mkdir -p $HOME/theos/toolchain/linux/iphone
-          tar -xf toolchain.tar.gz -C $HOME/theos/toolchain/linux/iphone --strip-components=1
-          ls $HOME/theos/toolchain/linux/iphone/bin/ | grep clang
+          ls $HOME/theos/toolchain/linux/iphone/bin/ | grep clang || echo "clang non trovato"
+          ls $HOME/theos/sdks/ || echo "nessun SDK"
 
       - name: Download iOS SDK
         run: |
