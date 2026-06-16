@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
@@ -15,18 +15,19 @@ jobs:
 
       - name: Setup Theos
         uses: nickchan7/theos-action@v1.3.5
+        with:
+          theos-sdks-path: ./theos/sdks
 
       - name: Compile .deb
         run: |
           cd SiriAIOverhaul
-          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+          make package FINALPACKAGE=1
 
       - name: Prepare APT repo structure
         run: |
           mkdir -p repo/debs
           cp SiriAIOverhaul/packages/*.deb repo/debs/
 
-          # Crea file Release
           cat > repo/Release << 'EOF'
           Origin: SiriAIOverhaul Repo
           Label: SiriAIOverhaul
@@ -37,11 +38,10 @@ jobs:
           Description: Repo per SiriAIOverhaul
           EOF
 
-          # Crea file Packages con metadati automatici
           DEB=$(ls repo/debs/*.deb)
-          SIZE=$(wc -c < "$DEB")
-          MD5=$(md5 -q "$DEB")
-          SHA256=$(shasum -a 256 "$DEB" | awk '{print $1}')
+          SIZE=$(wc -c < "$DEB" | tr -d ' ')
+          MD5=$(md5sum "$DEB" | awk '{print $1}')
+          SHA256=$(sha256sum "$DEB" | awk '{print $1}')
           FILENAME=$(basename "$DEB")
 
           cat > repo/Packages << EOF
@@ -59,11 +59,8 @@ jobs:
           SHA256: $SHA256
           EOF
 
-          # Comprime Packages
           gzip -k repo/Packages
-
-          # Pagina web minimale
-          echo "<h1>SiriAIOverhaul Repo</h1><p>Aggiungi questa URL su Sileo.</p>" > repo/index.html
+          echo "<h1>SiriAIOverhaul Repo</h1>" > repo/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
