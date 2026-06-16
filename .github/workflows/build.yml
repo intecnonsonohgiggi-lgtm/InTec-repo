@@ -38,15 +38,10 @@ jobs:
       - name: Fix SDK version in Makefile
         run: |
           sed -i 's/iphone:clang:[^:]*:/iphone:clang:15.6:/' Makefile
-          grep TARGET Makefile
 
-      - name: Debug struttura Tweak.x
+      - name: Clean e Compile .deb
         run: |
-          echo "=== Tutte le righe con %group, %hook, %end ==="
-          grep -n "^%group\|^%end\|^%hook" Tweak.x
-
-      - name: Compile .deb
-        run: |
+          rm -rf .theos packages
           make package FINALPACKAGE=1 2>&1
 
       - name: Prepare APT repo structure
