@@ -1,0 +1,73 @@
+name: Build and Publish Repo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-13
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Theos
+        uses: nickchan7/theos-action@v1.3.5
+
+      - name: Compile .deb
+        run: |
+          cd SiriAIOverhaul
+          make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+
+      - name: Prepare APT repo structure
+        run: |
+          mkdir -p repo/debs
+          cp SiriAIOverhaul/packages/*.deb repo/debs/
+
+          # Crea file Release
+          cat > repo/Release << 'EOF'
+          Origin: SiriAIOverhaul Repo
+          Label: SiriAIOverhaul
+          Suite: stable
+          Version: 1.0
+          Architectures: iphoneos-arm64
+          Components: main
+          Description: Repo per SiriAIOverhaul
+          EOF
+
+          # Crea file Packages con metadati automatici
+          DEB=$(ls repo/debs/*.deb)
+          SIZE=$(wc -c < "$DEB")
+          MD5=$(md5 -q "$DEB")
+          SHA256=$(shasum -a 256 "$DEB" | awk '{print $1}')
+          FILENAME=$(basename "$DEB")
+
+          cat > repo/Packages << EOF
+          Package: com.tuonome.siriaioverhaul
+          Name: SiriAIOverhaul
+          Version: 1.0.0
+          Architecture: iphoneos-arm64
+          Description: Sostituisce Siri con ChatGPT / Gemini
+          Maintainer: Il Tuo Nome <tuo@email.com>
+          Section: Tweaks
+          Depends: mobilesubstrate (>= 0.9.7000), firmware (>= 15.0)
+          Filename: debs/$FILENAME
+          Size: $SIZE
+          MD5sum: $MD5
+          SHA256: $SHA256
+          EOF
+
+          # Comprime Packages
+          gzip -k repo/Packages
+
+          # Pagina web minimale
+          echo "<h1>SiriAIOverhaul Repo</h1><p>Aggiungi questa URL su Sileo.</p>" > repo/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./repo
+          publish_branch: gh-pages
