@@ -39,6 +39,11 @@ jobs:
         run: |
           sed -i 's/iphone:clang:[^:]*:/iphone:clang:15.6:/' Makefile
 
+      - name: Rimuovi pragma mark con %group
+        run: |
+          sed -i 's/#pragma mark - %group/#pragma mark -/g' Tweak.x
+          grep -n "group" Tweak.x | head -20
+
       - name: Clean e Compile .deb
         run: |
           rm -rf .theos packages
