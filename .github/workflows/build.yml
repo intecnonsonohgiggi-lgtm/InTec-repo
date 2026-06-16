@@ -13,10 +13,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Theos
-        uses: nickchan7/theos-action@v1.3.5
-        with:
-          theos-sdks-path: ./theos/sdks
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git curl perl zip unzip fakeroot dpkg-dev
+
+      - name: Install Theos
+        run: |
+          git clone --recursive https://github.com/theos/theos.git $HOME/theos
+          echo "THEOS=$HOME/theos" >> $GITHUB_ENV
+          echo "$HOME/theos/bin" >> $GITHUB_PATH
+
+      - name: Download iOS SDK
+        run: |
+          curl -LO https://github.com/theos/sdks/releases/download/latest/iPhoneOS16.5.sdk.tar.xz
+          mkdir -p $HOME/theos/sdks
+          tar -xf iPhoneOS16.5.sdk.tar.xz -C $HOME/theos/sdks
 
       - name: Compile .deb
         run: |
