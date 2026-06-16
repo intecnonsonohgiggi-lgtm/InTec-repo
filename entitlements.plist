@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    entitlements.plist
+    Necessario per l'iniezione in processi Apple con sandbox restrittiva.
+    Dopamine / Ellekit supportano l'override via THEOS_PACKAGE_SCHEME=rootless.
+    
+    com.apple.springboard → autorizzazione esplicita all'iniezione in SpringBoard
+    com.apple.private.security.no-sandbox → bypassa sandbox per assistantd (demone)
+-->
+<plist version="1.0">
+<dict>
+    <key>platform-application</key>
+    <true/>
+    <key>com.apple.private.security.no-container</key>
+    <true/>
+    <key>get-task-allow</key>
+    <true/>
+</dict>
+</plist>

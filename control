@@ -1,0 +1,13 @@
+Package: com.tuonome.siriaioverhaul
+Name: SiriAIOverhaul
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Description: Sostituisce Siri con ChatGPT / Gemini con glow border ottimizzato per iPhone 6s.
+             Progettato per massima efficienza energetica su Apple A9.
+Maintainer: Il Tuo Nome <tuo@email.com>
+Author: Il Tuo Nome <tuo@email.com>
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.7000), firmware (>= 15.0), com.apple.springboard
+Conflicts: com.a3tweaks.asphaleia, com.rpetrich.activator
+Replaces: com.tuonome.siriaioverhaul
+Tag: purpose::extension, compatible::iphone
