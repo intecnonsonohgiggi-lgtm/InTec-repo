@@ -5,18 +5,21 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
 
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git curl perl zip unzip fakeroot dpkg-dev
+          sudo apt-get install -y git curl perl zip unzip fakeroot dpkg-dev clang-15 libc6-dev
 
       - name: Install Theos
         run: |
@@ -26,14 +29,18 @@ jobs:
 
       - name: Download iOS SDK
         run: |
-          curl -L -o sdk.tar.xz "https://github.com/theos/sdks/releases/download/2024-10-04/iPhoneOS15.5.sdk.tar.xz"
+          RELEASE=$(curl -s https://api.github.com/repos/theos/sdks/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
+          echo "Release trovato: $RELEASE"
+          curl -L -o sdk.tar.xz "https://github.com/theos/sdks/releases/download/${RELEASE}/iPhoneOS15.5.sdk.tar.xz"
+          file sdk.tar.xz
+          ls -lh sdk.tar.xz
           mkdir -p $HOME/theos/sdks
           tar -xf sdk.tar.xz -C $HOME/theos/sdks
-          
+
       - name: Compile .deb
         run: |
           cd SiriAIOverhaul
-          make package FINALPACKAGE=1
+          make package FINALPACKAGE=1 2>&1
 
       - name: Prepare APT repo structure
         run: |
@@ -75,7 +82,7 @@ jobs:
           echo "<h1>SiriAIOverhaul Repo</h1>" > repo/index.html
 
       - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./repo
