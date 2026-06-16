@@ -19,7 +19,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y git curl perl zip unzip fakeroot dpkg-dev clang-15 libc6-dev
+          sudo apt-get install -y git curl perl zip unzip fakeroot dpkg-dev
 
       - name: Install Theos
         run: |
@@ -27,17 +27,23 @@ jobs:
           echo "THEOS=$HOME/theos" >> $GITHUB_ENV
           echo "$HOME/theos/bin" >> $GITHUB_PATH
 
+      - name: Download iOS Toolchain (clang per iOS su Linux)
+        run: |
+          curl -L -o toolchain.tar.gz \
+            "https://github.com/kabiroberai/swift-toolchain-linux/releases/download/v2.3.0/toolchain-linux-ubuntu-latest.tar.gz" \
+            || curl -L -o toolchain.tar.gz \
+            "https://github.com/CRKatri/llvm-project/releases/download/swift-5.3.2-RELEASE/swift-5.3.2-RELEASE-ubuntu20.04.tar.gz"
+          mkdir -p $HOME/theos/toolchain/linux/iphone
+          tar -xf toolchain.tar.gz -C $HOME/theos/toolchain/linux/iphone --strip-components=1
+          ls $HOME/theos/toolchain/linux/iphone/bin/ | grep clang
+
       - name: Download iOS SDK
         run: |
-          curl -L -o sdk.tar.xz "https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS15.6.sdk.tar.xz"
+          curl -L -o sdk.tar.xz \
+            "https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS15.6.sdk.tar.xz"
           mkdir -p $HOME/theos/sdks
           tar -xf sdk.tar.xz -C $HOME/theos/sdks
           ls $HOME/theos/sdks
-
-      - name: Fix Makefile SDK version
-        run: |
-          sed -i 's/TARGET := iphone:clang:15.5:15.0/TARGET := iphone:clang:15.6:15.0/' Makefile
-          grep TARGET Makefile
 
       - name: Compile .deb
         run: |
@@ -47,7 +53,6 @@ jobs:
         run: |
           mkdir -p repo/debs
           cp packages/*.deb repo/debs/
-
           cat > repo/Release << 'EOF'
           Origin: SiriAIOverhaul Repo
           Label: SiriAIOverhaul
@@ -57,13 +62,11 @@ jobs:
           Components: main
           Description: Repo per SiriAIOverhaul
           EOF
-
           DEB=$(ls repo/debs/*.deb)
           SIZE=$(wc -c < "$DEB" | tr -d ' ')
           MD5=$(md5sum "$DEB" | awk '{print $1}')
           SHA256=$(sha256sum "$DEB" | awk '{print $1}')
           FILENAME=$(basename "$DEB")
-
           cat > repo/Packages << EOF
           Package: com.tuonome.siriaioverhaul
           Name: SiriAIOverhaul
@@ -78,7 +81,6 @@ jobs:
           MD5sum: $MD5
           SHA256: $SHA256
           EOF
-
           gzip -k repo/Packages
           echo "<h1>SiriAIOverhaul Repo</h1>" > repo/index.html
 
