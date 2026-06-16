@@ -29,25 +29,22 @@ jobs:
 
       - name: Download iOS SDK
         run: |
-          RELEASE=$(curl -s https://api.github.com/repos/theos/sdks/releases/latest | grep '"tag_name"' | cut -d'"' -f4)
-          echo "Release: $RELEASE"
-          
-          # Mostra tutti i file disponibili in questo release
-          curl -s https://api.github.com/repos/theos/sdks/releases/latest | grep '"browser_download_url"'
-          
-          # Scarica il primo SDK iOS disponibile
-          URL=$(curl -s https://api.github.com/repos/theos/sdks/releases/latest | grep '"browser_download_url"' | grep -i 'iPhoneOS' | head -1 | cut -d'"' -f4)
-          echo "URL SDK: $URL"
-          
-          curl -L -o sdk.tar.xz "$URL"
-          file sdk.tar.xz
-          ls -lh sdk.tar.xz
+          curl -L -o sdk.tar.xz "https://github.com/theos/sdks/releases/download/master-146e41f/iPhoneOS15.6.sdk.tar.xz"
           mkdir -p $HOME/theos/sdks
           tar -xf sdk.tar.xz -C $HOME/theos/sdks
+          ls $HOME/theos/sdks
 
       - name: Compile .deb
         run: |
-          cd SiriAIOverhaul
+          echo "Struttura repo:"
+          ls -la
+          echo "---"
+          find . -name "Makefile" 2>/dev/null
+          echo "---"
+          # Entra nella cartella giusta
+          TWEAK_DIR=$(find . -name "Makefile" | head -1 | xargs dirname)
+          echo "Cartella tweak: $TWEAK_DIR"
+          cd "$TWEAK_DIR"
           make package FINALPACKAGE=1 2>&1
 
       - name: Prepare APT repo structure
