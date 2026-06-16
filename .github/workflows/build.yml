@@ -34,23 +34,19 @@ jobs:
           tar -xf sdk.tar.xz -C $HOME/theos/sdks
           ls $HOME/theos/sdks
 
+      - name: Fix Makefile SDK version
+        run: |
+          sed -i 's/TARGET := iphone:clang:15.5:15.0/TARGET := iphone:clang:15.6:15.0/' Makefile
+          grep TARGET Makefile
+
       - name: Compile .deb
         run: |
-          echo "Struttura repo:"
-          ls -la
-          echo "---"
-          find . -name "Makefile" 2>/dev/null
-          echo "---"
-          # Entra nella cartella giusta
-          TWEAK_DIR=$(find . -name "Makefile" | head -1 | xargs dirname)
-          echo "Cartella tweak: $TWEAK_DIR"
-          cd "$TWEAK_DIR"
           make package FINALPACKAGE=1 2>&1
 
       - name: Prepare APT repo structure
         run: |
           mkdir -p repo/debs
-          cp SiriAIOverhaul/packages/*.deb repo/debs/
+          cp packages/*.deb repo/debs/
 
           cat > repo/Release << 'EOF'
           Origin: SiriAIOverhaul Repo
