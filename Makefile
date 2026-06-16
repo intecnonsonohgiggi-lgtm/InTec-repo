@@ -7,7 +7,7 @@
 THEOS_PACKAGE_SCHEME = rootless
 
 # ── SDK e target minimo ────────────────────────────────────────────────────────
-TARGET := iphone:clang:latest:15.0
+TARGET := iphone:clang:15.5:15.0
 
 # ── Architettura: solo arm64 per A9, niente arm64e inutile su 6s ───────────────
 ARCHS = arm64
