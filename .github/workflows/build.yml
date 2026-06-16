@@ -26,10 +26,10 @@ jobs:
 
       - name: Download iOS SDK
         run: |
-          curl -LO https://github.com/theos/sdks/releases/download/latest/iPhoneOS16.5.sdk.tar.xz
+          curl -L -o sdk.tar.xz "https://github.com/theos/sdks/releases/download/2024-10-04/iPhoneOS15.5.sdk.tar.xz"
           mkdir -p $HOME/theos/sdks
-          tar -xf iPhoneOS16.5.sdk.tar.xz -C $HOME/theos/sdks
-
+          tar -xf sdk.tar.xz -C $HOME/theos/sdks
+          
       - name: Compile .deb
         run: |
           cd SiriAIOverhaul
