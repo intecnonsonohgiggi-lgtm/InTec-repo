@@ -40,6 +40,11 @@ jobs:
           sed -i 's/iphone:clang:[^:]*:/iphone:clang:15.6:/' Makefile
           grep TARGET Makefile
 
+      - name: Debug struttura Tweak.x
+        run: |
+          echo "=== Tutte le righe con %group, %hook, %end ==="
+          grep -n "^%group\|^%end\|^%hook" Tweak.x
+
       - name: Compile .deb
         run: |
           make package FINALPACKAGE=1 2>&1
