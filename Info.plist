@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    Info.plist — SiriAIOverhaulPrefs Bundle
+    Registra il bundle come preference pane di Preferences.app
+-->
+<plist version="1.0">
+<dict>
+    <key>CFBundleDevelopmentRegion</key>
+    <string>it</string>
+
+    <key>CFBundleDisplayName</key>
+    <string>SiriAI Overhaul</string>
+
+    <key>CFBundleExecutable</key>
+    <string>SiriAIOverhaulPrefs</string>
+
+    <key>CFBundleIdentifier</key>
+    <string>com.tuonome.siriaioverhaul.prefs</string>
+
+    <key>CFBundleName</key>
+    <string>SiriAIOverhaulPrefs</string>
+
+    <key>CFBundlePackageType</key>
+    <string>BNDL</string>
+
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+
+    <key>CFBundleVersion</key>
+    <string>1</string>
+
+    <!-- Classe radice del controller preferenze -->
+    <key>NSPrincipalClass</key>
+    <string>SAPRootListController</string>
+
+    <!-- Descrizione privacy per Speech Recognition (mostrata nel pannello) -->
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>SiriAI Overhaul usa il riconoscimento vocale on-device per trascrivere i tuoi comandi senza inviarli a server Apple.</string>
+
+    <!-- Descrizione privacy per microfono -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>SiriAI Overhaul ha bisogno del microfono per ascoltare i tuoi comandi vocali.</string>
+</dict>
+</plist>

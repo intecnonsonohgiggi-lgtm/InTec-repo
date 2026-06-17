@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+    Root.plist — SiriAIOverhaul Preferences
+    UI del pannello Impostazioni → SiriAIOverhaul
+-->
+<plist version="1.0">
+<dict>
+    <key>title</key>
+    <string>SiriAI Overhaul</string>
+
+    <key>items</key>
+    <array>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- Sezione: Generale                                                  -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <dict>
+            <key>cell</key>      <string>PSGroupCell</string>
+            <key>label</key>     <string>Generale</string>
+            <key>footerText</key>
+            <string>Abilita o disabilita SiriAI Overhaul. Quando disabilitato, Siri risponde normalmente e il bordo glow non viene mostrato.</string>
+        </dict>
+
+        <!-- Switch principale -->
+        <dict>
+            <key>cell</key>          <string>PSSwitchCell</string>
+            <key>key</key>           <string>enabled</string>
+            <key>label</key>         <string>Attivo</string>
+            <key>default</key>       <true/>
+            <key>defaults</key>      <string>com.tuonome.siriaioverhaul</string>
+            <key>PostNotification</key>
+            <string>com.tuonome.siriaioverhaul.prefsChanged</string>
+        </dict>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- Sezione: Motore AI                                                 -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <dict>
+            <key>cell</key>      <string>PSGroupCell</string>
+            <key>label</key>     <string>Motore AI</string>
+            <key>footerText</key>
+            <string>Seleziona il provider AI. Gemini 1.5 Flash è consigliato per risposte più veloci su connessione lenta.</string>
+        </dict>
+
+        <!-- Segmento AI Provider -->
+        <dict>
+            <key>cell</key>      <string>PSSegmentCell</string>
+            <key>key</key>       <string>aiProvider</string>
+            <key>label</key>     <string>Provider</string>
+            <key>default</key>   <integer>0</integer>
+            <key>defaults</key>  <string>com.tuonome.siriaioverhaul</string>
+            <key>validTitles</key>
+            <array>
+                <string>ChatGPT</string>
+                <string>Gemini</string>
+            </array>
+            <key>validValues</key>
+            <array>
+                <integer>0</integer>
+                <integer>1</integer>
+            </array>
+            <key>PostNotification</key>
+            <string>com.tuonome.siriaioverhaul.prefsChanged</string>
+        </dict>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- Sezione: Chiave API                                                -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <dict>
+            <key>cell</key>      <string>PSGroupCell</string>
+            <key>label</key>     <string>Chiave API</string>
+            <key>footerText</key>
+            <string>Inserisci la chiave del provider selezionato. La chiave viene salvata localmente in /var/jb/var/mobile/Library/Preferences/ e non viene mai trasmessa a terze parti diverse dal provider scelto.</string>
+        </dict>
+
+        <!-- Campo testo API Key (usa SAPRootListController per salvataggio sicuro) -->
+        <dict>
+            <key>cell</key>          <string>PSEditTextCell</string>
+            <key>key</key>           <string>apiKey</string>
+            <key>label</key>         <string>API Key</string>
+            <key>placeholder</key>   <string>sk-... oppure AIza...</string>
+            <key>isSecure</key>      <true/>
+            <key>keyboard</key>      <string>UIKeyboardTypeASCIICapable</string>
+            <key>defaults</key>      <string>com.tuonome.siriaioverhaul</string>
+            <key>PostNotification</key>
+            <string>com.tuonome.siriaioverhaul.prefsChanged</string>
+        </dict>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- Sezione: Effetto Visivo                                            -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <dict>
+            <key>cell</key>      <string>PSGroupCell</string>
+            <key>label</key>     <string>Effetto Visivo</string>
+            <key>footerText</key>
+            <string>Il bordo glow usa una sola animazione CAKeyframe a bassa frequenza per minimizzare l'uso della GPU dell'A9.</string>
+        </dict>
+
+        <!-- Switch glow border -->
+        <dict>
+            <key>cell</key>          <string>PSSwitchCell</string>
+            <key>key</key>           <string>glowEnabled</string>
+            <key>label</key>         <string>Bordo Glow</string>
+            <key>default</key>       <true/>
+            <key>defaults</key>      <string>com.tuonome.siriaioverhaul</string>
+            <key>PostNotification</key>
+            <string>com.tuonome.siriaioverhaul.prefsChanged</string>
+        </dict>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- Sezione: Info                                                      -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <dict>
+            <key>cell</key>  <string>PSGroupCell</string>
+            <key>label</key> <string>Informazioni</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>  <string>PSStaticTextCell</string>
+            <key>label</key> <string>Versione</string>
+            <key>value</key> <string>1.0.0</string>
+        </dict>
+
+        <dict>
+            <key>cell</key>  <string>PSStaticTextCell</string>
+            <key>label</key> <string>Compatibilità</string>
+            <key>value</key> <string>iOS 15+ · Rootless (Dopamine)</string>
+        </dict>
+
+    </array>
+</dict>
+</plist>
